@@ -1,28 +1,30 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class FaceHandler {
     private ArrayList<FaceData> trainingData;
     private ArrayList<FaceData> testTrainingData;
-    private ArrayList<Integer[][]> testData;
+    private ArrayList<FaceData> testData; //TODO
     private HashMap<String, Integer> facit;
 
     public FaceHandler(String trainingFile, String trainingFacit, String testFile) throws FileNotFoundException {
         trainingData = readFaceData(trainingFile);
         testTrainingData = splitTrainingData();
-
+        facit = readFacitFile(trainingFacit);
         printData(testTrainingData);
         System.out.println(testTrainingData.size() + " test");
         System.out.println(trainingData.size() + " train");
+        printMap(facit);
     }
 
     private ArrayList<FaceData> readFaceData(String faceFile) throws FileNotFoundException {
-        java.io.FileReader fr = new java.io.FileReader(faceFile);
-        BufferedReader br = new BufferedReader(fr);
+        BufferedReader br = new BufferedReader(new FileReader(faceFile));
         String currentLine = "";
         ArrayList<FaceData> data = new ArrayList<FaceData>();
 
@@ -58,16 +60,30 @@ public class FaceHandler {
         ArrayList<FaceData> tempList = new ArrayList<FaceData>();
 
         for (int i = 0; i < testSize; i++) {
-            System.out.println(trainingData.get(0).getImageID());
             tempList.add(trainingData.get(0));
             trainingData.remove(0);
         }
-
         return tempList;
     }
 
-    private HashMap<String, Integer> readFacitFile(String facitFile) {
-        return null;
+    private HashMap<String, Integer> readFacitFile(String facitFile) throws FileNotFoundException {
+        BufferedReader br = new BufferedReader(new FileReader(facitFile));
+        String currentLine;
+        HashMap<String, Integer> tempMap = new HashMap<String, Integer>();
+
+        try {
+            while ((currentLine = jumpToNextImage(br)) != null) {
+                StringTokenizer st = new StringTokenizer(currentLine);
+                if (st.countTokens() == 2) {
+                    tempMap.put(st.nextToken(), Integer.parseInt(st.nextToken()));
+                } else {
+                    System.err.println("Error in file format: <" + facitFile + ">");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tempMap;
     }
 
     private String jumpToNextImage(BufferedReader br) throws IOException {
@@ -78,13 +94,26 @@ public class FaceHandler {
         return tempLine;
     }
 
+    public ArrayList<FaceData> getTestTrainingData() {
+        return testTrainingData;
+    }
+
+    public HashMap<String, Integer> getFacit() {
+        return facit;
+    }
+
     private void printData(ArrayList<FaceData> data) {
         for (FaceData f : data) {
             System.out.println(f.getImageID());
             printMatrix(f.getFaceData());
             System.out.println();
         }
+    }
 
+    private void printMap(HashMap<String, Integer> map) {
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            System.out.println(e.getKey() + ", " + e.getValue());
+        }
     }
 
     private void printMatrix(Integer[][] m) {
