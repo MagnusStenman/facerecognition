@@ -1,3 +1,4 @@
+
 # - Happy, Sad, Mischievous or Mad - #
 # Training data (300 images)
 # Correct classifications can be found in training-facit.txt
