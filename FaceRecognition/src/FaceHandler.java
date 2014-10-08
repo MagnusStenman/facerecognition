@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class FaceHandler {
+
     private ArrayList<FaceData> trainingData;
     private ArrayList<FaceData> testTrainingData;
     private ArrayList<FaceData> testData; //TODO
@@ -96,6 +97,10 @@ public class FaceHandler {
 
     public ArrayList<FaceData> getTestTrainingData() {
         return testTrainingData;
+    }
+
+    public ArrayList<FaceData> getTrainingData() {
+        return trainingData;
     }
 
     public HashMap<String, Integer> getFacit() {

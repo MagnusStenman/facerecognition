@@ -3,10 +3,12 @@ import java.io.FileNotFoundException;
 public class Faces {
 
 	private FaceHandler fh;
+    private Training training;
 
 	public Faces(String[] args) {
 		try {
 			fh = new FaceHandler(args[0], args[1], args[2]);
+            training = new Training(fh.getTrainingData(), fh.getTestTrainingData());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
