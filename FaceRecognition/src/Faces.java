@@ -2,6 +2,8 @@ import java.io.FileNotFoundException;
 
 public class Faces {
 
+    //TODO build every variable/function in algorithm
+
 	private FaceHandler fh;
     private Training training;
 
