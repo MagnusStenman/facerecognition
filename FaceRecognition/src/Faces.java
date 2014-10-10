@@ -12,10 +12,8 @@ public class Faces {
 			fh = new FaceHandler(args[0], args[1], args[2]);
             training = new Training(fh.getTrainingData(), fh.getTestTrainingData());
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public static void main(String[] args) {
