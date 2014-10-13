@@ -20,11 +20,17 @@ public class FaceHandler {
 		trainingData = readFaceData(trainingFile);
 		testTrainingData = splitTrainingData();
 		facit = readFacitFile(trainingFacit);
-
+		testData = readFaceData(testFile);
+		
+		
 		printData(testTrainingData);
 //		System.out.println(testTrainingData.size() + " test");
 //		System.out.println(trainingData.size() + " train");
 //		printMap(facit);
+	}
+
+	public ArrayList<FaceData> getTestData() {
+		return testData;
 	}
 
 	private ArrayList<FaceData> readFaceData(String faceFile)
@@ -38,14 +44,14 @@ public class FaceHandler {
 			while ((currentLine = jumpToNextImage(br)) != null) {
 				String imageID = currentLine;
 				// skapa matris
-                Node[][] matrix = new Node[IMAGE_SIZE][IMAGE_SIZE];
+                int[][] matrix = new int[IMAGE_SIZE][IMAGE_SIZE];
 				for (int i = 0; i < IMAGE_SIZE; i++) {
 					currentLine = br.readLine();
 
 					StringTokenizer st = new StringTokenizer(currentLine);
 					int j = 0;
 					while (st.hasMoreTokens()) {
-						matrix[i][j] = new Node(Integer.parseInt(st.nextToken()));
+						matrix[i][j] = Integer.parseInt(st.nextToken());
 						j++;
 					}
 
@@ -118,7 +124,7 @@ public class FaceHandler {
 	private void printData(ArrayList<FaceData> data) {
 		for (FaceData f : data) {
 			System.out.println(f.getImageID());
-			printMatrix(f.getFaceData());
+			//printMatrix(f.getFaceData());
 			System.out.println();
 		}
 	}

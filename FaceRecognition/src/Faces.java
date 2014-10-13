@@ -14,7 +14,10 @@ public class Faces {
             training.setTrainingData(fh.getTrainingData());
             training.setTestTrainingData(fh.getTestTrainingData());
             training.setFacit(fh.getFacit());
-            training.startTraining();
+            
+            if(training.startTraining()) {
+            	training.runTest(fh.getTestTrainingData());
+            }
 
 		} catch (FileNotFoundException e) {
 			System.err.println(e.getMessage());
