@@ -48,16 +48,21 @@ public class Node {
 
     private double activationFunction(double x) {
 //        return 1/(1+Math.pow(Math.E, -x));
-        return Math.tanh(x);
+        if (x > 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+//        return Math.tanh(x);
     }
 
 	public double[] getAct() {
 		return activation;
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		return ""+weights[0]+ " "+weights[1]+" "+weights[2]+" "+weights[3];
 	}
 
