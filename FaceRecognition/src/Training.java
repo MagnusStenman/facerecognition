@@ -44,8 +44,7 @@ public class Training {
 				buildBrain(f);
 				calculateActivation();
 				adjustWeights(brain, facit.get(f.getImageID()));
-
-				// double[][] aMatrix = activation(f);
+                // double[][] aMatrix = activation(f);
 				// double error[][] = computeError(aMatrix, f);
 			}
 		} while (scoreChecker());
@@ -53,12 +52,51 @@ public class Training {
 		return true;
 	}
 
+    private void adjustWeights(Node[][] brain, Integer curFacit) {
+        for (Node[] ds : brain) {
+            for (Node node : ds) {
+                for (int i = 0; i < node.getAct().length; i++) {
+                    int desiredOutput = 0;
+                    if(curFacit == (i+1)) {
+                        desiredOutput = 1;
+                    }
+                    double error = desiredOutput - node.getAct()[i];
+//
+// Error is always -1, 0 or 1
+//
+
+// w is always positive or 0 when error is positive
+
+//                    System.out.println("Error:" +  error);
+                    if (error != 0) {
+                        double w;
+                        if (error < 0)
+                            w = LEARNING_RATE * error * node.getNodeValue();
+                        else
+                            w = (-1) * (LEARNING_RATE * error * node.getNodeValue());
+
+                        node.setWeights(i, node.getWeights()[i] + w);
+//                        if (node.getNodeValue() != 0 && error > 0) {
+//                            System.out.println("w:" +  w);
+//                            System.out.println();
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+                    }
+                }
+            }
+        }
+    }
+
 	private void buildBrain(FaceData f) {
 		for (int i = 0; i < f.getFaceData().length; i++) {
 			for (int j = 0; j < f.getFaceData()[i].length; j++) {
 				brain[i][j].setNodeValue(f.getFaceData()[i][j]);
-			}
-		}
+            }
+        }
 	}
 
 
@@ -69,7 +107,7 @@ public class Training {
 			}
 		}
 	}
-	
+
 
 	private boolean scoreChecker() {
 		int[] faces = new int[4];
@@ -80,7 +118,7 @@ public class Training {
 			buildBrain(fd);
 			calculateActivation();
 
-			for (Node[] nodes : brain) {
+            for (Node[] nodes : brain) {
 				for (Node node : nodes) {
 					for (int i = 0; i < node.getAct().length; i++) {
 						if (node.getAct()[i] == 1) {
@@ -131,28 +169,6 @@ public class Training {
 		}
 		return true;
 	}
-
-	private void adjustWeights(Node[][] brain, Integer curFacit) {
-		
-		for (Node[] ds : brain) {
-			for (Node node : ds) {
-				for (int i = 0; i < node.getAct().length; i++) {
-					int desiredOutput = 0;
-					if(curFacit == (i+1)) {
-						desiredOutput = 1;
-					}
-					double error = desiredOutput - node.getAct()[i];
-					if (error != 0) {
-						double w = LEARNING_RATE * error * node.getNodeValue();
-						node.setWeights(i, node.getWeights()[i] + w);
-					}
-				}
-			}
-		}
-	}
-
-
-
 
 	public void runTest(ArrayList<FaceData> testTrainingData2) {
 		// TODO Auto-generated method stub

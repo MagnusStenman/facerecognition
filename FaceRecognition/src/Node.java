@@ -33,8 +33,24 @@ public class Node {
     public void calculateActivation() {
     	for(int i = 0; i < weights.length; i++) {
     		activation[i] = activationFunction(nodeValue*weights[i]);
-    	}
+        }
     }
+
+// act på summan mao
+
+//    private int act(int mood) {
+//        double sum = 0;
+//        for (int i = 0; i < neurons.length; i++) {
+//            Neuron neuron = neurons[i];
+//            sum += neuron.getGreyScale() * neuron.getWeight(mood);
+//        }
+//        if (sum > 0.5) {
+//            return 1;
+//        } else {
+//            return 0;
+//        }
+//    }
+
     /*
     public double getActivationRecord() {
         double temp = 0;
