@@ -22,9 +22,9 @@ public class FaceHandler {
 		facit = readFacitFile(trainingFacit);
 
 		printData(testTrainingData);
-		System.out.println(testTrainingData.size() + " test");
-		System.out.println(trainingData.size() + " train");
-		printMap(facit);
+//		System.out.println(testTrainingData.size() + " test");
+//		System.out.println(trainingData.size() + " train");
+//		printMap(facit);
 	}
 
 	private ArrayList<FaceData> readFaceData(String faceFile)
@@ -38,14 +38,14 @@ public class FaceHandler {
 			while ((currentLine = jumpToNextImage(br)) != null) {
 				String imageID = currentLine;
 				// skapa matris
-				Integer[][] matrix = new Integer[IMAGE_SIZE][IMAGE_SIZE];
+                Node[][] matrix = new Node[IMAGE_SIZE][IMAGE_SIZE];
 				for (int i = 0; i < IMAGE_SIZE; i++) {
 					currentLine = br.readLine();
 
 					StringTokenizer st = new StringTokenizer(currentLine);
 					int j = 0;
 					while (st.hasMoreTokens()) {
-						matrix[i][j] = Integer.parseInt(st.nextToken());
+						matrix[i][j] = new Node(Integer.parseInt(st.nextToken()));
 						j++;
 					}
 
@@ -129,11 +129,11 @@ public class FaceHandler {
 		}
 	}
 
-	private void printMatrix(Integer[][] m) {
+	private void printMatrix(Node[][] m) {
 		System.out.println();
 		for (int i = 0; i < m.length; i++) {
 			for (int j = 0; j < m[0].length; j++) {
-				System.out.print(m[i][j] + " ");
+				System.out.print(m[i][j].getNodeValue() + " ");
 			}
 			System.out.println();
 		}

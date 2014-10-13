@@ -1,10 +1,9 @@
-
 public class FaceData {
 
     private String imageID;
-    private Integer[][] faceData;
+    private Node[][] faceData;
 
-    public FaceData(String imageID, Integer[][] faceData) {
+    public FaceData(String imageID, Node[][] faceData) {
         this.imageID = imageID;
         this.faceData = faceData;
     }
@@ -13,7 +12,5 @@ public class FaceData {
         return imageID;
     }
 
-    public Integer[][] getFaceData() {
-        return faceData;
-    }
+    public Node[][] getFaceData() { return faceData; }
 }
