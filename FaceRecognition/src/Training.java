@@ -73,6 +73,8 @@ public class Training {
 
 	private boolean scoreChecker() {
 		int[] faces = new int[4];
+        int[] result = new int[4];
+        int hitCount = 0;
 
 		for (FaceData fd : testTrainingData) {
 			buildBrain(fd);
@@ -93,13 +95,37 @@ public class Training {
 					
 				}
 			}
-			
-		}
-		System.out.println("size "+testTrainingData.size());
+
+            int mood = 0;
+            for (int i=0;i<faces.length;i++) {
+                int max = faces[0];
+                if (faces[i] >= max) {
+                    mood = i+1;
+                }
+            }
+            System.out.println(fd.getImageID() + " " + mood);
+            result[mood-1]++;
+
+            if (facit.get(fd.getImageID()) == mood) {
+                System.out.println(fd.getImageID() + " : is correct");
+                hitCount++;
+            }
+        }
+
+        System.out.println("Mood 1: " + result[0]);
+        System.out.println("Mood 2: " + result[1]);
+        System.out.println("Mood 3: " + result[2]);
+        System.out.println("Mood 4: " + result[3]);
+
+        double percent = ((double)hitCount/(double)testTrainingData.size())*100;
+        System.out.println(percent + "% correct");
+
+//        System.out.println("size "+testTrainingData.size());
 		for (int i=0;i<faces.length;i++) {
-			
-			System.out.println("Face "+(i+1)+": "+((faces[i]/testTrainingData.size()*100)));
-			if(faces[i] > 75) {
+
+
+//			System.out.println("Face "+(i+1)+": "+((faces[i]/testTrainingData.size()*100)));
+			if(percent > 75) {
 				return false;
 			}
 		}
