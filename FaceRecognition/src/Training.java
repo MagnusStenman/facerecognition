@@ -10,8 +10,9 @@ public class Training {
 	private double LEARNING_RATE = 1;
 	double percent = 0;
 	private Node[][] brain;
+    private long counter;
 
-	public Training() {
+    public Training() {
 
 	}
 
@@ -198,9 +199,13 @@ public class Training {
 		// System.out.println("size "+testTrainingData.size());
 		for (int i = 0; i < faces.length; i++) {
 
-			if (percent >= 70) {
-				return false;
-			}
+            if (percent >= 70) {
+                counter++;
+                if (counter == 3)
+                    return false;
+            } else {
+                counter = 0;
+            }
 		}
 		return true;
 	}
