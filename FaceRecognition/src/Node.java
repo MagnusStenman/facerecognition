@@ -11,7 +11,7 @@ public class Node {
         activation = new double[4];
         Random r = new Random();
         for (int i=0;i<weights.length;i++) {
-            weights[i] = -100 + (200) *r.nextDouble();
+            weights[i] = -10 + (20) *r.nextDouble();
         }
     }
    

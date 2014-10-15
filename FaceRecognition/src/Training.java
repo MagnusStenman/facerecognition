@@ -54,8 +54,8 @@ public class Training {
 				// double[][] aMatrix = activation(f);
 				// double error[][] = computeError(aMatrix, f);
 			}
-			if(LEARNING_RATE+0.1 > 0) {
-			LEARNING_RATE -= 0.1;
+			if(LEARNING_RATE+0.01 > 0) {
+			LEARNING_RATE -= 0.01;
 			} else {
 			}
 		} while (scoreChecker());
@@ -163,7 +163,7 @@ public class Training {
 		int[] faces = new int[4];
 		int[] result = new int[5];
 		int hitCount = 0;
-		int mood = 3;
+		int mood = 0;
 		for (FaceData fd : testTrainingData) {
 			buildBrain(fd);
 			for (int i = 0; i < 4; i++) {
@@ -198,7 +198,7 @@ public class Training {
 		// System.out.println("size "+testTrainingData.size());
 		for (int i = 0; i < faces.length; i++) {
 
-			if (percent > 75) {
+			if (percent >= 70) {
 				return false;
 			}
 		}
