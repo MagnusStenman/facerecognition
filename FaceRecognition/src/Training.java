@@ -52,7 +52,11 @@ public class Training {
 			Collections.shuffle(trainingData);
             populateLists();
 
-			for (FaceData f : trainingData2) {
+            System.out.println("trainingData size: "+trainingData.size());
+            System.out.println("testTrainingData size "+testTrainingData.size());
+            System.out.println("trainingData2 (actual training data) size "+trainingData2.size());
+
+            for (FaceData f : trainingData2) {
 				buildBrain(f);
 				for (int i = 0; i < 4; i++) {
 					double act = calculateActivation(i + 1);
@@ -205,7 +209,7 @@ public class Training {
 
 		// System.out.println("size "+testTrainingData.size());
 
-        if (percent >= 75) {
+        if (percent >= 95) {
             counter++;
             if (counter == 3)
                 return false;
@@ -232,9 +236,8 @@ public class Training {
 			if(guess) {
 				Random r = new Random();
 				int g = r.nextInt(3)+1;
-				System.out.println(fd.getImageID() + " " + g);
+				System.out.println(fd.getImageID() + " " + g + " - GISSNING");
 			}
-			
 		}
 	}
 }
