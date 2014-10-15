@@ -23,7 +23,7 @@ public class FaceHandler {
 		testData = readFaceData(testFile);
 		
 		
-		printData(testTrainingData);
+//		printData(testTrainingData);
 //		System.out.println(testTrainingData.size() + " test");
 //		System.out.println(trainingData.size() + " train");
 //		printMap(facit);
