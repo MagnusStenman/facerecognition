@@ -18,7 +18,10 @@ public class FaceHandler {
 	public FaceHandler(String trainingFile, String trainingFacit,
 			String testFile) throws FileNotFoundException {
 		trainingData = readFaceData(trainingFile);
-		testTrainingData = splitTrainingData();
+
+//		testTrainingData = splitTrainingData();
+        testTrainingData = readFaceData(trainingFile);
+
 		facit = readFacitFile(trainingFacit);
 		testData = readFaceData(testFile);
 		

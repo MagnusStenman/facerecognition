@@ -1,10 +1,12 @@
 import javax.swing.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Training {
 
 	private ArrayList<FaceData> trainingData;
+    private ArrayList<FaceData> trainingData2;
 	private ArrayList<FaceData> testTrainingData;
 	private HashMap<String, Integer> facit;
 	private double LEARNING_RATE = 1;
@@ -34,6 +36,12 @@ public class Training {
 		this.facit = facit;
 	}
 
+    private void populateLists() {
+        int testSize = (int) (trainingData.size() * 0.30);
+        testTrainingData =  new ArrayList<FaceData>(trainingData.subList(0, testSize));
+        trainingData2 = new ArrayList<FaceData>(trainingData.subList(testSize, trainingData.size()));
+    }
+
 	public boolean startTraining() {
 		if (trainingData == null || testTrainingData == null || facit == null) {
 			return false;
@@ -42,8 +50,9 @@ public class Training {
 		do {
 			iterate++;
 			Collections.shuffle(trainingData);
-//			Collections.shuffle(testTrainingData);
-			for (FaceData f : trainingData) {
+            populateLists();
+
+			for (FaceData f : trainingData2) {
 				buildBrain(f);
 				for (int i = 0; i < 4; i++) {
 					double act = calculateActivation(i + 1);
@@ -57,9 +66,8 @@ public class Training {
 			}
 			if (LEARNING_RATE + 0.01 > 0) {
 				LEARNING_RATE -= 0.01;
-			} else {
 			}
-		} while (scoreChecker());
+        } while (scoreChecker());
 		System.err.println("iterationts " + iterate);
 		return true;
 	}
@@ -161,7 +169,6 @@ public class Training {
 	}
 
 	private boolean scoreChecker() {
-		int[] faces = new int[4];
 		int[] result = new int[5];
 		int hitCount = 0;
 		int mood = 0;
@@ -191,22 +198,20 @@ public class Training {
 		// System.out.println("Mood 3: " + result[2]);
 		// System.out.println("Mood 4: " + result[3]);
 
-		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
-			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-			System.err.println(percent + "% correct");
-		}
+        if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+            percent = ((double) hitCount / (double) testTrainingData.size() * 100);
+            System.err.println(percent + "% correct");
+        }
 
 		// System.out.println("size "+testTrainingData.size());
-		for (int i = 0; i < faces.length; i++) {
 
-            if (percent >= 70) {
-                counter++;
-                if (counter == 3)
-                    return false;
-            } else {
-                counter = 0;
-            }
-		}
+        if (percent >= 75) {
+            counter++;
+            if (counter == 3)
+                return false;
+        } else {
+            counter = 0;
+        }
 		return true;
 	}
 
