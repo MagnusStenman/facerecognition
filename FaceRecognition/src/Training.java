@@ -41,7 +41,7 @@ public class Training {
 		do {
 			iterate++;
 			Collections.shuffle(trainingData);
-			Collections.shuffle(testTrainingData);
+//			Collections.shuffle(testTrainingData);
 			for (FaceData f : trainingData) {
 				buildBrain(f);
 				for (int i = 0; i < 4; i++) {
@@ -54,12 +54,12 @@ public class Training {
 				// double[][] aMatrix = activation(f);
 				// double error[][] = computeError(aMatrix, f);
 			}
-			if(LEARNING_RATE+0.01 > 0) {
-			LEARNING_RATE -= 0.01;
+			if (LEARNING_RATE + 0.01 > 0) {
+				LEARNING_RATE -= 0.01;
 			} else {
 			}
 		} while (scoreChecker());
-		System.out.println("iterationts "+iterate);
+		System.err.println("iterationts " + iterate);
 		return true;
 	}
 
@@ -134,7 +134,7 @@ public class Training {
 		} else {
 			act = 0;
 		}
-//		 double act = Math.tanh(aSum);
+		// double act = Math.tanh(aSum);
 		return act;
 	}
 
@@ -150,7 +150,7 @@ public class Training {
 				for (int j = 0; j < brain[i].length; j++) {
 					double aex = (LEARNING_RATE * error * brain[i][j]
 							.getNodeValue());
-					
+
 					brain[i][j].setWeights(mood - 1,
 							brain[i][j].getWeights()[mood - 1] + aex);
 
@@ -178,10 +178,10 @@ public class Training {
 			result[mood]++;
 
 			if (facit.get(fd.getImageID()) == mood) {
-//				System.out.println(fd.getImageID() + " : is correct");
+				// System.out.println(fd.getImageID() + " : is correct");
 				hitCount++;
 			} else {
-//				System.out.println(fd.getImageID() + ": is incorrect");
+				// System.out.println(fd.getImageID() + ": is incorrect");
 			}
 		}
 
@@ -190,9 +190,9 @@ public class Training {
 		// System.out.println("Mood 3: " + result[2]);
 		// System.out.println("Mood 4: " + result[3]);
 
-		if(((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
 			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-			System.out.println(percent + "% correct");
+			System.err.println(percent + "% correct");
 		}
 
 		// System.out.println("size "+testTrainingData.size());
@@ -205,8 +205,26 @@ public class Training {
 		return true;
 	}
 
-	public void runTest(ArrayList<FaceData> testTrainingData2) {
-		// TODO Auto-generated method stub
+	public void runTest(ArrayList<FaceData> data) {
+		for (FaceData fd : data) {
+			buildBrain(fd);
+			boolean guess = true;
+			
+			for (int i = 0; i < 4; i++) {
 
+				double act = calculateActivation(i + 1);
+				if (act == 1) {
+					guess = false;
+					System.out.println(fd.getImageID() + " " + (i + 1));
+					break;
+				}
+			}
+			if(guess) {
+				Random r = new Random();
+				int g = r.nextInt(3)+1;
+				System.out.println(fd.getImageID() + " " + g);
+			}
+			
+		}
 	}
 }
