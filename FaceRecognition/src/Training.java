@@ -1,243 +1,272 @@
-import javax.swing.*;
-
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Training {
 
+	private final static int IMAGE_SIZE = 20;
+	private ArrayList<FaceData> allData;
 	private ArrayList<FaceData> trainingData;
-    private ArrayList<FaceData> trainingData2;
 	private ArrayList<FaceData> testTrainingData;
 	private HashMap<String, Integer> facit;
+	private Node[][] neuralNetwork;
 	private double LEARNING_RATE = 1;
-	double percent = 0;
-	private Node[][] brain;
-    private long counter;
+	private double percent = 0;
+	private long counter;
 
-    public Training() {
-
-	}
-
-	public void setTrainingData(ArrayList<FaceData> trainingData) {
-		this.trainingData = trainingData;
-		brain = new Node[20][20];
-		for (int i = 0; i < 20; i++) {
-			for (int j = 0; j < 20; j++) {
-				brain[i][j] = new Node();
+	/**
+	 * Constructor initializes a matrix which is the neural network for 
+	 * each index corresponding to a pixel in the image.
+	 */
+	public Training() {
+		neuralNetwork = new Node[IMAGE_SIZE][IMAGE_SIZE];
+		for (int i = 0; i < IMAGE_SIZE; i++) {
+			for (int j = 0; j < IMAGE_SIZE; j++) {
+				neuralNetwork[i][j] = new Node();
 			}
 		}
 	}
 
-	public void setTestTrainingData(ArrayList<FaceData> testTrainingData) {
-		this.testTrainingData = testTrainingData;
+	/**
+	 * Set trainingData
+	 * 
+	 * @param trainingData
+	 */
+	public void setTrainingData(ArrayList<FaceData> trainingData) {
+		this.allData = trainingData;
 	}
 
+	/**
+	 * Set facit file.
+	 * @param facit
+	 */
 	public void setFacit(HashMap<String, Integer> facit) {
 		this.facit = facit;
 	}
 
-    private void populateLists() {
-        int testSize = (int) (trainingData.size() * 0.30);
-        testTrainingData =  new ArrayList<FaceData>(trainingData.subList(0, testSize));
-        trainingData2 = new ArrayList<FaceData>(trainingData.subList(testSize, trainingData.size()));
-    }
+	/**
+	 * Takes the list containing all image files and splits it into 
+	 * two lists, one for learning and one for testing when the learning 
+	 * is complete.
+	 */
+	private void populateLists() {
+		int testSize = (int) (allData.size() * 0.30);
+		testTrainingData = new ArrayList<FaceData>(allData.subList(0,
+				testSize));
+		trainingData = new ArrayList<FaceData>(allData.subList(testSize,
+				allData.size()));
+	}
 
+	/**
+	 * Trains the network once with all the images in the trainingData list.
+	 * and adjust each nodes weights depending on the error value. 
+	 * Then runs the scoreChecker to check if the network has learned enough, 
+	 * and the loop can quit.
+	 * 
+	 * @return true if training worked else false.
+	 */
 	public boolean startTraining() {
-		if (trainingData == null || testTrainingData == null || facit == null) {
+		if (allData == null || facit == null) {
 			return false;
 		}
+		
 		int iterate = 0;
 		do {
 			iterate++;
-			Collections.shuffle(trainingData);
-            populateLists();
+			Collections.shuffle(allData);
+			populateLists();
 
-            System.err.println("trainingData size: "+trainingData.size());
-            System.err.println("testTrainingData size "+testTrainingData.size());
-            System.err.println("trainingData2 (actual training data) size "+trainingData2.size());
+			System.err.println("trainingData size: " + allData.size());
+			System.err.println("testTrainingData size "
+					+ testTrainingData.size());
+			System.err.println("trainingData2 (actual training data) size "
+					+ trainingData.size());
 
-            for (FaceData f : trainingData2) {
-				buildBrain(f);
+			for (FaceData f : trainingData) {
+				buildNetwork(f);
 				for (int i = 0; i < 4; i++) {
 					double act = calculateActivation(i + 1);
-					adjust(i + 1, facit.get(f.getImageID()), act);
+					adjustWeights(i + 1, facit.get(f.getImageID()), act);
 				}
-
-				// adjustWeights(brain, facit.get(f.getImageID()));
-
-				// double[][] aMatrix = activation(f);
-				// double error[][] = computeError(aMatrix, f);
 			}
+
 			if (LEARNING_RATE + 0.01 > 0) {
 				LEARNING_RATE -= 0.01;
 			}
-        } while (scoreChecker());
-		System.err.println("iterationts " + iterate);
+		} while (scoreChecker());
+		System.err.println("iterations " + iterate);
 		return true;
 	}
 
-	private void adjustWeights(Node[][] brain, Integer curFacit) {
-		for (Node[] ds : brain) {
-			for (Node node : ds) {
-				for (int i = 0; i < node.getAct().length; i++) {
-					int desiredOutput = 0;
-					if (curFacit == (i + 1)) {
-						desiredOutput = 1;
-					}
-					double error = desiredOutput - node.getAct()[i];
-					//
-					// Error is always -1, 0 or 1
-					//
-
-					// w is always positive or 0 when error is positive
-
-					// System.out.println("Error:" + error);
-					if (error != 0) {
-						double w;
-						w = LEARNING_RATE * error * node.getNodeValue();
-						// if (error < 0)
-						// else
-						// w = (-1) * (LEARNING_RATE * error *
-						// node.getNodeValue());
-
-						node.setWeights(i, node.getWeights()[i] + w);
-						// if (node.getNodeValue() != 0 && error > 0) {
-						// System.out.println("w:" + w);
-						// System.out.println();
-						// try {
-						// Thread.sleep(5000);
-						// } catch (InterruptedException e) {
-						// e.printStackTrace();
-						// }
-						// }
-					}
-				}
-			}
-		}
-	}
-
-	private void buildBrain(FaceData f) {
+	/**
+	 * Sets the networks nodevalues to the pixelvalues from the image.
+	 * this is then used to calculate the errors and adjust the weights.
+	 * 
+	 * @param f
+	 */
+	private void buildNetwork(FaceData f) {
 		for (int i = 0; i < f.getFaceData().length; i++) {
 			for (int j = 0; j < f.getFaceData()[i].length; j++) {
-				brain[i][j].setNodeValue(f.getFaceData()[i][j]);
+				neuralNetwork[i][j].setNodeValue(f.getFaceData()[i][j]);
 			}
 		}
 	}
 
-	// private void calculateActivation() {
-	// for (int i = 0; i < brain.length; i++) {
-	// for (int j = 0; j < brain[i].length; j++) {
-	// brain[i][j].calculateActivation();
-	// }
-	// }
-	// }
-
+	/**
+	 * Calculates the activation record for the current mood.
+	 * used to train the neural network and to check which mood a 
+	 * picture is.
+	 * 
+	 * @param mood
+	 * @return the activation record, 1 if activated, else 0.
+	 */
 	private double calculateActivation(int mood) {
 		double aSum = 0;
-		for (int i = 0; i < brain.length; i++) {
-			for (int j = 0; j < brain[i].length; j++) {
-				aSum += brain[i][j].getNodeValue()
-						* brain[i][j].getWeights()[mood - 1];
+		for (int i = 0; i < neuralNetwork.length; i++) {
+			for (int j = 0; j < neuralNetwork[i].length; j++) {
+				aSum += neuralNetwork[i][j].getNodeValue()
+						* neuralNetwork[i][j].getWeights()[mood - 1];
 			}
 		}
-
-		double act;
-		if (aSum > 0.5) {
-			act = 1;
-		} else {
-			act = 0;
-		}
-		// double act = Math.tanh(aSum);
-		return act;
+		return activationFunc(aSum);
 	}
 
-	private void adjust(int mood, int curFacit, double act) {
+	/**
+	 * Activation function.
+	 * 
+	 * @param sum
+	 * @return
+	 */
+	private double activationFunc(double sum) {
+		if (sum > 0.5) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Adjust the weights for each node based on the error value, learning rate and the 
+	 * nodeValue. 
+	 * 
+	 * @param mood
+	 * @param curFacit
+	 * @param act
+	 */
+	private void adjustWeights(int mood, int curFacit, double act) {
 		int desiredOutput = 0;
 		if (curFacit == (mood)) {
 			desiredOutput = 1;
 		}
+		
 		double error = desiredOutput - act;
-
 		if (error != 0) {
-			for (int i = 0; i < brain.length; i++) {
-				for (int j = 0; j < brain[i].length; j++) {
-					double aex = (LEARNING_RATE * error * brain[i][j]
+			for (int i = 0; i < neuralNetwork.length; i++) {
+				for (int j = 0; j < neuralNetwork[i].length; j++) {
+					double adjustVal = (LEARNING_RATE * error * neuralNetwork[i][j]
 							.getNodeValue());
 
-					brain[i][j].setWeights(mood - 1,
-							brain[i][j].getWeights()[mood - 1] + aex);
-
+					neuralNetwork[i][j].setWeights(mood - 1,
+							neuralNetwork[i][j].getWeights()[mood - 1]
+									+ adjustVal);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Checks if the neural network has learned enough to be done.
+	 * Important to not train to little or to much.
+	 * 
+	 * @return true if training is complete false otherwise
+	 */
 	private boolean scoreChecker() {
 		int[] result = new int[5];
 		int hitCount = 0;
 		int mood = 0;
+		boolean guess = true;
+		int[] acts = new int[4];
+		
 		for (FaceData fd : testTrainingData) {
-			buildBrain(fd);
+			buildNetwork(fd);
 			for (int i = 0; i < 4; i++) {
+				guess = false;
 
 				double act = calculateActivation(i + 1);
+
 				if (act == 1) {
+					acts[i]++;
 					mood = i + 1;
 				}
 			}
+			if (!isOnlyOneAct(acts) && !guess) {
+				// TODO Guess on one of the acts that is 1.
+			}
+			if (guess) {
+				Random r = new Random();
+				mood = r.nextInt(3) + 1;
+			}
 
-			// System.out.println(fd.getImageID() + " " + mood);
 			result[mood]++;
 
 			if (facit.get(fd.getImageID()) == mood) {
-				// System.out.println(fd.getImageID() + " : is correct");
 				hitCount++;
-			} else {
-				// System.out.println(fd.getImageID() + ": is incorrect");
 			}
 		}
 
-		// System.out.println("Mood 1: " + result[0]);
-		// System.out.println("Mood 2: " + result[1]);
-		// System.out.println("Mood 3: " + result[2]);
-		// System.out.println("Mood 4: " + result[3]);
+		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
+			System.err.println(percent + "% correct");
+		}
 
-        if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
-            percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-            System.err.println(percent + "% correct");
-        }
-
-		// System.out.println("size "+testTrainingData.size());
-
-        if (percent >= 95) {
-            counter++;
-            if (counter == 3)
-                return false;
-        } else {
-            counter = 0;
-        }
+		if (percent >= 95) {
+			counter++;
+			if (counter == 3)
+				return false;
+		} else {
+			counter = 0;
+		}
 		return true;
 	}
 
-	public void runTest(ArrayList<FaceData> data) {
+	public void runGuesses(ArrayList<FaceData> data) {
 		for (FaceData fd : data) {
-			buildBrain(fd);
+			buildNetwork(fd);
 			boolean guess = true;
-			
+			int[] acts = new int[4];
+
 			for (int i = 0; i < 4; i++) {
 
 				double act = calculateActivation(i + 1);
 				if (act == 1) {
+					acts[i]++;
+
 					guess = false;
 					System.out.println(fd.getImageID() + " " + (i + 1));
 					break;
 				}
 			}
-			if(guess) {
+			if (!isOnlyOneAct(acts) && !guess) {
+				// TODO Guess on one of the acts that is one.
+			}
+			if (guess) {
 				Random r = new Random();
-				int g = r.nextInt(3)+1;
-				System.out.println(fd.getImageID() + " " + g + " - GISSNING");
+				int g = r.nextInt(3) + 1;
+				System.out.print(fd.getImageID() + " " + g);
+				System.err.print(" - GISSNING");
+				System.out.println();
 			}
 		}
+	}
+
+	private boolean isOnlyOneAct(int[] acts) {
+		int times = 0;
+		for (int i : acts) {
+			if (i == 1) {
+				times++;
+			}
+		}
+		return times == 1;
 	}
 }
