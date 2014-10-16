@@ -52,9 +52,9 @@ public class Training {
 			Collections.shuffle(trainingData);
             populateLists();
 
-            System.out.println("trainingData size: "+trainingData.size());
-            System.out.println("testTrainingData size "+testTrainingData.size());
-            System.out.println("trainingData2 (actual training data) size "+trainingData2.size());
+            System.err.println("trainingData size: "+trainingData.size());
+            System.err.println("testTrainingData size "+testTrainingData.size());
+            System.err.println("trainingData2 (actual training data) size "+trainingData2.size());
 
             for (FaceData f : trainingData2) {
 				buildBrain(f);
