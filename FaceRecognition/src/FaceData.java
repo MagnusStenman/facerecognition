@@ -1,7 +1,7 @@
 /**
  * FaceData: Class that is a data carrier for a Face image, 
  * stores each pixel value in a matrix of integers.
- * also stores the image id as a string.
+ * Also stores the image id as a string.
  */
 public class FaceData {
 
@@ -11,8 +11,8 @@ public class FaceData {
     /**
      * Constructor
      * 
-     * @param imageID
-     * @param faceData
+     * @param imageID the line over the image, e.g. "Image1"
+     * @param faceData the actual face in greyscale within range [0-31]
      */
     public FaceData(String imageID, int[][] faceData) {
         this.imageID = imageID;

@@ -11,7 +11,7 @@ public class Training {
 	private ArrayList<FaceData> testTrainingData;
 	private HashMap<String, Integer> facit;
 	private Node[][] neuralNetwork;
-	private double LEARNING_RATE = 1;
+	private double learningRate = 1;
 	private double percent = 0;
 	private long counter;
 
@@ -59,12 +59,12 @@ public class Training {
 	}
 
 	/**
-	 * Trains the network once with all the images in the trainingData list.
-	 * and adjust each nodes weights depending on the error value. 
+	 * Trains the network once with all the images in the trainingData list
+	 * and adjusts each nodes weights depending on the error values.
 	 * Then runs the scoreChecker to check if the network has learned enough, 
 	 * and the loop can quit.
 	 * 
-	 * @return true if training worked else false.
+	 * @return true if training worked, else false.
 	 */
 	public boolean startTraining() {
 		if (allData == null || facit == null) {
@@ -77,12 +77,6 @@ public class Training {
 			Collections.shuffle(allData);
 			populateLists();
 
-			System.err.println("trainingData size: " + allData.size());
-			System.err.println("testTrainingData size "
-					+ testTrainingData.size());
-			System.err.println("trainingData2 (actual training data) size "
-					+ trainingData.size());
-
 			for (FaceData f : trainingData) {
 				buildNetwork(f);
 				for (int i = 0; i < 4; i++) {
@@ -91,17 +85,17 @@ public class Training {
 				}
 			}
 
-			if (LEARNING_RATE + 0.01 > 0) {
-				LEARNING_RATE -= 0.01;
+			if (learningRate + 0.01 > 0) {
+				learningRate -= 0.01;
 			}
 		} while (scoreChecker());
-		System.err.println("iterations " + iterate);
+		System.err.println("Training iterations " + iterate);
 		return true;
 	}
 
 	/**
 	 * Sets the networks nodevalues to the pixelvalues from the image.
-	 * this is then used to calculate the errors and adjust the weights.
+	 * This is then used to calculate the errors and adjust the weights.
 	 * 
 	 * @param f
 	 */
@@ -115,7 +109,7 @@ public class Training {
 
 	/**
 	 * Calculates the activation record for the current mood.
-	 * used to train the neural network and to check which mood a 
+	 * Used to train the neural network and to check which mood a
 	 * picture is.
 	 * 
 	 * @param mood
@@ -135,11 +129,11 @@ public class Training {
 	/**
 	 * Activation function.
 	 * 
-	 * @param sum
+	 * @param aSum
 	 * @return
 	 */
-	private double activationFunc(double sum) {
-		if (sum > 0.5) {
+	private double activationFunc(double aSum) {
+		if (aSum > 0.5) {
 			return 1;
 		} else {
 			return 0;
@@ -150,13 +144,13 @@ public class Training {
 	 * Adjust the weights for each node based on the error value, learning rate and the 
 	 * nodeValue. 
 	 * 
-	 * @param mood
-	 * @param curFacit
-	 * @param act
+	 * @param mood which mood to calculate and adjust for, range allowed [1-4]
+	 * @param curFacit which mood the face actual is in
+	 * @param act activation value for the current face and mood
 	 */
 	private void adjustWeights(int mood, int curFacit, double act) {
 		int desiredOutput = 0;
-		if (curFacit == (mood)) {
+		if (curFacit == mood) {
 			desiredOutput = 1;
 		}
 		
@@ -164,7 +158,7 @@ public class Training {
 		if (error != 0) {
 			for (int i = 0; i < neuralNetwork.length; i++) {
 				for (int j = 0; j < neuralNetwork[i].length; j++) {
-					double adjustVal = (LEARNING_RATE * error * neuralNetwork[i][j]
+					double adjustVal = (learningRate * error * neuralNetwork[i][j]
 							.getNodeValue());
 
 					neuralNetwork[i][j].setWeights(mood - 1,
@@ -220,7 +214,7 @@ public class Training {
 			System.err.println(percent + "% correct");
 		}
 
-		if (percent >= 95) {
+		if (percent >= 85) {
 			counter++;
 			if (counter == 3)
 				return false;
@@ -245,17 +239,16 @@ public class Training {
 					guess = false;
 					System.out.println(fd.getImageID() + " " + (i + 1));
 					break;
+                    //TODO will break and therefor not count acts[]++
 				}
 			}
 			if (!isOnlyOneAct(acts) && !guess) {
 				// TODO Guess on one of the acts that is one.
 			}
-			if (guess) {
+			else if (guess) {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
-				System.out.print(fd.getImageID() + " " + g);
-				System.err.print(" - GISSNING");
-				System.out.println();
+				System.out.println(fd.getImageID() + " " + g);
 			}
 		}
 	}
