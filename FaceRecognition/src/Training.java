@@ -238,6 +238,7 @@ public class Training {
 			int[] acts = new int[4];
 
 			for (int i = 0; i < 4; i++) {
+
 				double act = calculateActivation(i + 1);
 				if (act == 1) {
 					acts[i]++;
@@ -252,11 +253,12 @@ public class Training {
 				}
 			} else if (!guess) {
 				Random r = new Random();
-				int g = r.nextInt(4);
+				int g = r.nextInt(3);
 				while (acts[g] == 0) {
 					g = r.nextInt(4);
 				}
-				System.out.println(fd.getImageID() + " " + (g + 1));
+				
+				System.out.println(fd.getImageID() + " " + (g+1));
 			} else {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
@@ -265,7 +267,12 @@ public class Training {
 		}
 	}
 
-	// TODO
+	/**
+	 * Checks if there is more then one of the indexes that
+	 * has the value 1, return true if only one is, else false.
+	 * @param acts
+	 * @return
+	 */
 	private boolean isOnlyOneAct(int[] acts) {
 		int times = 0;
 		for (int i : acts) {
