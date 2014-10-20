@@ -19,6 +19,15 @@ public class FileHandler {
 	private ArrayList<FaceData> testData;
 	private HashMap<String, Integer> facit;
 
+	/**
+	 * Constructor, Reads data from all the in files and stores them in in suitable data 
+	 * structures.
+	 * 
+	 * @param trainingFile
+	 * @param trainingFacit
+	 * @param testFile
+	 * @throws FileNotFoundException
+	 */
 	public FileHandler(String trainingFile, String trainingFacit,
                        String testFile) throws FileNotFoundException {
 
@@ -27,6 +36,14 @@ public class FileHandler {
 		facit = readFacitFile(trainingFacit);
 	}
 
+	/**
+	 * Reads data from a file containing facial expression images, 
+	 * and stores them in a FaceData object.
+	 * 
+	 * @param faceFile
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	private ArrayList<FaceData> readToFaceData(String faceFile)
 			throws FileNotFoundException {
 		BufferedReader br = new BufferedReader(new FileReader(faceFile));
@@ -56,6 +73,13 @@ public class FileHandler {
 		return data;
 	}
 
+	/**
+	 * Reads a facit file and stores the correct answer for each image in a HashMap.
+	 * 
+	 * @param facitFile
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	private HashMap<String, Integer> readFacitFile(String facitFile)
 			throws FileNotFoundException {
 		BufferedReader br = new BufferedReader(new FileReader(facitFile));
@@ -79,6 +103,12 @@ public class FileHandler {
 		return tempMap;
 	}
 
+	/**
+	 * Reads lines until tempLine contains the first line of a image.
+	 * @param br
+	 * @return
+	 * @throws IOException
+	 */
 	private String jumpToNextImage(BufferedReader br) throws IOException {
 		String tempLine;
 		while ((tempLine = br.readLine()) != null
@@ -87,14 +117,29 @@ public class FileHandler {
 		return tempLine;
 	}
 
+	/**
+	 * Getter for testData
+	 * 
+	 * @return testData: ArrayList<FaceData>
+	 */
 	public ArrayList<FaceData> getTestData() {
 		return testData;
 	}
 
+	/**
+	 * Getter for trainingData
+	 * 
+	 * @return trainingData: ArrayList<FaceData>
+	 */
 	public ArrayList<FaceData> getTrainingData() {
 		return trainingData;
 	}
 
+	/**
+	 * Getter for facit file
+	 * 
+	 * @return facit: HashMap<String, Integer>
+	 */
 	public HashMap<String, Integer> getFacit() {
 		return facit;
 	}
