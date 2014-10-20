@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+/**
+ * This class will read the training-file and test-file to ArrayLists of FaceData objects,
+ * the facit-file is read to a HashMap of Strings(keys) and Integers(values). 
+ * It will skip all lines which are either empty or starts with a hash-sign (#). 
+ * FaceData
+ */
 public class FileHandler {
 
 	private static final int IMAGE_SIZE = 20;
