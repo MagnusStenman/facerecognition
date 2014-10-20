@@ -182,53 +182,54 @@ public class Training {
 	 * 
 	 * @return true if training is complete false otherwise
 	 */
-    private boolean scoreChecker() {
-        int hitCount = 0;
-        int mood = 0;
-        int[] acts = new int[4];
+	private boolean scoreChecker() {
+		int hitCount = 0;
+		int mood = 0;
+		int[] acts = new int[4];
 
-        for (FaceData fd : testTrainingData) {
-            acts = new int[4];
-            buildNetwork(fd);
+		for (FaceData fd : testTrainingData) {
+			acts = new int[4];
+			buildNetwork(fd);
 
-            for (int i = 0; i < 4; i++) {
-                double act = calculateActivation(i + 1);
-                if (act == 1) {
-                    acts[i]++;
-                    mood = i + 1;
-                }
-            }
+			for (int i = 0; i < 4; i++) {
+				double act = calculateActivation(i + 1);
+				if (act == 1) {
+					acts[i]++;
+					mood = i + 1;
+				}
+			}
 
-            if (!isOnlyOneAct(acts)) {
-                return true;
-            }
+			if (!isOnlyOneAct(acts)) {
+				return true;
+			}
 
-            if (facit.get(fd.getImageID()) == mood) {
-                hitCount++;
-            }
-        }
+			if (facit.get(fd.getImageID()) == mood) {
+				hitCount++;
+			}
+		}
 
-        if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
-            percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-        }
+		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
+		}
 
-        if (percent >= 85) {
-            counter++;
-            if (counter == 3)
-                return false;
-        } else {
-            counter = 0;
-        }
-        return true;
-    }
+		if (percent >= 85) {
+			counter++;
+			if (counter == 3)
+				return false;
+		} else {
+			counter = 0;
+		}
+		return true;
+	}
 
 	/**
-	 * Goes through all the images in the data array and calculates
-	 * the act for  all facial expressions and if the act is equal to 1,
-	 * Guess that the image shows that expression and print, the image id a
-	 * and which facial expression guessed on in the same format as the facit file.
+	 * Goes through all the images in the data array and calculates the act for
+	 * all facial expressions and if the act is equal to 1, Guess that the image
+	 * shows that expression and print, the image id a and which facial
+	 * expression guessed on in the same format as the facit file.
 	 * 
-	 * @param data ArrayList containing all the images.
+	 * @param data
+	 *            ArrayList containing all the images.
 	 */
 	public void runGuesses(ArrayList<FaceData> data) {
 		for (FaceData fd : data) {
@@ -243,14 +244,27 @@ public class Training {
 					acts[i]++;
 
 					guess = false;
-					System.out.println(fd.getImageID() + " " + (i + 1));
 					break;
 					// TODO will break and therefor not count acts[]++
 				}
 			}
-			if (!isOnlyOneAct(acts) && !guess) {
+			if (isOnlyOneAct(acts)) {
+				for (int i = 0; i < acts.length; i++) {
+					if (acts[i] == 1) {
+						System.out.println(fd.getImageID() + " " + (i + 1));
+					}
+				}
+			} else if (!guess) {
+				Random r = new Random();
+				int g = 1;
+				while (acts[g] == 0) {
+					g = r.nextInt(3);
+				}
+				System.out.println(fd.getImageID() + " " + g+1);
+				
 				// TODO Guess on one of the acts that is one.
-			} else if (guess) {
+
+			} else {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
 				System.out.println(fd.getImageID() + " " + g);
@@ -258,7 +272,7 @@ public class Training {
 		}
 	}
 
-	//TODO
+	// TODO
 	private boolean isOnlyOneAct(int[] acts) {
 		int times = 0;
 		for (int i : acts) {
