@@ -51,7 +51,7 @@ public class Training {
 	 * is complete.
 	 */
 	private void populateLists() {
-		int testSize = (int) (allData.size() * 0.30);
+		int testSize = (int) (allData.size() * 0.25);
 		testTrainingData = new ArrayList<FaceData>(allData.subList(0,
 				testSize));
 		trainingData = new ArrayList<FaceData>(allData.subList(testSize,
@@ -211,7 +211,7 @@ public class Training {
 
 		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
 			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-			System.err.println(percent + "% correct");
+//			System.err.println(percent + "% correct");
 		}
 
 		if (percent >= 85) {
