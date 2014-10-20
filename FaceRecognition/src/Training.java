@@ -238,14 +238,10 @@ public class Training {
 			int[] acts = new int[4];
 
 			for (int i = 0; i < 4; i++) {
-
 				double act = calculateActivation(i + 1);
 				if (act == 1) {
 					acts[i]++;
-
 					guess = false;
-					break;
-					// TODO will break and therefor not count acts[]++
 				}
 			}
 			if (isOnlyOneAct(acts)) {
@@ -256,14 +252,11 @@ public class Training {
 				}
 			} else if (!guess) {
 				Random r = new Random();
-				int g = 1;
+				int g = r.nextInt(4);
 				while (acts[g] == 0) {
-					g = r.nextInt(3);
+					g = r.nextInt(4);
 				}
-				System.out.println(fd.getImageID() + " " + g+1);
-				
-				// TODO Guess on one of the acts that is one.
-
+				System.out.println(fd.getImageID() + " " + (g + 1));
 			} else {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
