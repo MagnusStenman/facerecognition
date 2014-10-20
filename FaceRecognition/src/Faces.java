@@ -15,7 +15,7 @@ public class Faces {
             	System.err.println("Failure when training");
             }
 		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
+			System.err.println("File not found");
 		}
 	}
 
