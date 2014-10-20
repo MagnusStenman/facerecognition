@@ -242,10 +242,7 @@ public class Training {
 				double act = calculateActivation(i + 1);
 				if (act == 1) {
 					acts[i]++;
-
 					guess = false;
-					break;
-					// TODO will break and therefor not count acts[]++
 				}
 			}
 			if (isOnlyOneAct(acts)) {
@@ -256,14 +253,13 @@ public class Training {
 				}
 			} else if (!guess) {
 				Random r = new Random();
-				int g = 1;
+				int g = r.nextInt(3);
+				// TODO Guess on one of the acts that is one.
 				while (acts[g] == 0) {
 					g = r.nextInt(3);
 				}
-				System.out.println(fd.getImageID() + " " + g+1);
-				
-				// TODO Guess on one of the acts that is one.
-
+				g++;
+				System.out.println(fd.getImageID() + " " + g);
 			} else {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
@@ -272,7 +268,12 @@ public class Training {
 		}
 	}
 
-	// TODO
+	/**
+	 * Checks if there is more then one of the indexes that
+	 * has the value 1, return true if only one is, else false.
+	 * @param acts
+	 * @return
+	 */
 	private boolean isOnlyOneAct(int[] acts) {
 		int times = 0;
 		for (int i : acts) {
