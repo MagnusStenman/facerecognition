@@ -9,7 +9,7 @@ import java.util.Random;
 public class Node {
 
     private int nodeValue;
-    private double[] weights;
+    private final double[] weights;
    
     /**
 	 * Constructor, initiates the weights array and randomizes values for each

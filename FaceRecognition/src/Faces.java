@@ -14,7 +14,7 @@ public class Faces {
      * Constructor which runs training and the guessing.
      * @param args
      */
-	public Faces(String[] args) {
+	private Faces(String[] args) {
 		try {
 			FileHandler fh = new FileHandler(args[0], args[1], args[2]);
             Training training = new Training();

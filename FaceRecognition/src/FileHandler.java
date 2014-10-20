@@ -23,9 +23,9 @@ public class FileHandler {
 	 * Constructor, Reads data from all the in files and stores them in in suitable data 
 	 * structures.
 	 * 
-	 * @param trainingFile
-	 * @param trainingFacit
-	 * @param testFile
+	 * @param trainingFile the .txt file with the training faces
+	 * @param trainingFacit the .txt file with the facit
+	 * @param testFile the .txt file to evaluate
 	 * @throws FileNotFoundException
 	 */
 	public FileHandler(String trainingFile, String trainingFacit,
@@ -41,14 +41,14 @@ public class FileHandler {
 	 * and stores them in a FaceData object.
 	 * 
 	 * @param faceFile
-	 * @return
+	 * @return the data as an ArrayList
 	 * @throws FileNotFoundException
 	 */
 	private ArrayList<FaceData> readToFaceData(String faceFile)
 			throws FileNotFoundException {
 		BufferedReader br = new BufferedReader(new FileReader(faceFile));
 
-		String currentLine = "";
+		String currentLine;
 		ArrayList<FaceData> data = new ArrayList<FaceData>();
 
 		try {
@@ -77,7 +77,7 @@ public class FileHandler {
 	 * Reads a facit file and stores the correct answer for each image in a HashMap.
 	 * 
 	 * @param facitFile
-	 * @return
+	 * @return the data as an HashMap
 	 * @throws FileNotFoundException
 	 */
 	private HashMap<String, Integer> readFacitFile(String facitFile)
@@ -105,8 +105,8 @@ public class FileHandler {
 
 	/**
 	 * Reads lines until tempLine contains the first line of a image.
-	 * @param br
-	 * @return
+	 * @param br bufferedReader
+	 * @return the next line to read
 	 * @throws IOException
 	 */
 	private String jumpToNextImage(BufferedReader br) throws IOException {

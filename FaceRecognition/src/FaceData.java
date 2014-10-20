@@ -5,8 +5,8 @@
  */
 public class FaceData {
 
-    private String imageID;
-    private int[][] faceData;
+    private final String imageID;
+    private final int[][] faceData;
 
     /**
      * Constructor
