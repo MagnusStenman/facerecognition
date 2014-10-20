@@ -182,54 +182,45 @@ public class Training {
 	 * 
 	 * @return true if training is complete false otherwise
 	 */
-	private boolean scoreChecker() {
-		int[] result = new int[5];
-		int hitCount = 0;
-		int mood = 0;
-		boolean guess = true;
-		int[] acts = new int[4];
+    private boolean scoreChecker() {
+        int hitCount = 0;
+        int mood = 0;
+        int[] acts = new int[4];
 
-		for (FaceData fd : testTrainingData) {
-			buildNetwork(fd);
-			for (int i = 0; i < 4; i++) {
-				guess = false;
+        for (FaceData fd : testTrainingData) {
+            acts = new int[4];
+            buildNetwork(fd);
 
-				double act = calculateActivation(i + 1);
+            for (int i = 0; i < 4; i++) {
+                double act = calculateActivation(i + 1);
+                if (act == 1) {
+                    acts[i]++;
+                    mood = i + 1;
+                }
+            }
 
-				if (act == 1) {
-					acts[i]++;
-					mood = i + 1;
-				}
-			}
-			if (!isOnlyOneAct(acts) && !guess) {
-				// TODO Guess on one of the acts that is 1.
-			}
-			if (guess) {
-				Random r = new Random();
-				mood = r.nextInt(3) + 1;
-			}
+            if (!isOnlyOneAct(acts)) {
+                return true;
+            }
 
-			result[mood]++;
+            if (facit.get(fd.getImageID()) == mood) {
+                hitCount++;
+            }
+        }
 
-			if (facit.get(fd.getImageID()) == mood) {
-				hitCount++;
-			}
-		}
+        if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+            percent = ((double) hitCount / (double) testTrainingData.size() * 100);
+        }
 
-		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
-			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-			// System.err.println(percent + "% correct");
-		}
-
-		if (percent >= 85) {
-			counter++;
-			if (counter == 3)
-				return false;
-		} else {
-			counter = 0;
-		}
-		return true;
-	}
+        if (percent >= 85) {
+            counter++;
+            if (counter == 3)
+                return false;
+        } else {
+            counter = 0;
+        }
+        return true;
+    }
 
 	/**
 	 * Goes through all the images in the data array and calculates
