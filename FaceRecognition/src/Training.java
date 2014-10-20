@@ -254,12 +254,11 @@ public class Training {
 			} else if (!guess) {
 				Random r = new Random();
 				int g = r.nextInt(3);
-				// TODO Guess on one of the acts that is one.
 				while (acts[g] == 0) {
-					g = r.nextInt(3);
+					g = r.nextInt(4);
 				}
-				g++;
-				System.out.println(fd.getImageID() + " " + g);
+				
+				System.out.println(fd.getImageID() + " " + (g+1));
 			} else {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
