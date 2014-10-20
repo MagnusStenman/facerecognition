@@ -3,6 +3,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * Training: Trains the Perceptron. Uses the data read from FileHandler and
+ * trains until it has a suitable percentage of correct answers on a set of
+ * images.
+ * 
+ */
 public class Training {
 
 	private final static int IMAGE_SIZE = 20;
@@ -16,8 +22,8 @@ public class Training {
 	private long counter;
 
 	/**
-	 * Constructor initializes a matrix which is the neural network for 
-	 * each index corresponding to a pixel in the image.
+	 * Constructor initializes a matrix which is the neural network for each
+	 * index corresponding to a pixel in the image.
 	 */
 	public Training() {
 		neuralNetwork = new Node[IMAGE_SIZE][IMAGE_SIZE];
@@ -39,6 +45,7 @@ public class Training {
 
 	/**
 	 * Set facit file.
+	 * 
 	 * @param facit
 	 */
 	public void setFacit(HashMap<String, Integer> facit) {
@@ -46,23 +53,21 @@ public class Training {
 	}
 
 	/**
-	 * Takes the list containing all image files and splits it into 
-	 * two lists, one for learning and one for testing when the learning 
-	 * is complete.
+	 * Takes the list containing all image files and splits it into two lists,
+	 * one for learning and one for testing when the learning is complete.
 	 */
 	private void populateLists() {
 		int testSize = (int) (allData.size() * 0.25);
-		testTrainingData = new ArrayList<FaceData>(allData.subList(0,
-				testSize));
+		testTrainingData = new ArrayList<FaceData>(allData.subList(0, testSize));
 		trainingData = new ArrayList<FaceData>(allData.subList(testSize,
 				allData.size()));
 	}
 
 	/**
-	 * Trains the network once with all the images in the trainingData list
-	 * and adjusts each nodes weights depending on the error values.
-	 * Then runs the scoreChecker to check if the network has learned enough, 
-	 * and the loop can quit.
+	 * Trains the network once with all the images in the trainingData list and
+	 * adjusts each nodes weights depending on the error values. Then runs the
+	 * scoreChecker to check if the network has learned enough, and the loop can
+	 * quit.
 	 * 
 	 * @return true if training worked, else false.
 	 */
@@ -70,7 +75,7 @@ public class Training {
 		if (allData == null || facit == null) {
 			return false;
 		}
-		
+
 		int iterate = 0;
 		do {
 			iterate++;
@@ -94,8 +99,8 @@ public class Training {
 	}
 
 	/**
-	 * Sets the networks nodevalues to the pixelvalues from the image.
-	 * This is then used to calculate the errors and adjust the weights.
+	 * Sets the networks nodevalues to the pixelvalues from the image. This is
+	 * then used to calculate the errors and adjust the weights.
 	 * 
 	 * @param f
 	 */
@@ -108,9 +113,8 @@ public class Training {
 	}
 
 	/**
-	 * Calculates the activation record for the current mood.
-	 * Used to train the neural network and to check which mood a
-	 * picture is.
+	 * Calculates the activation record for the current mood. Used to train the
+	 * neural network and to check which mood a picture is.
 	 * 
 	 * @param mood
 	 * @return the activation record, 1 if activated, else 0.
@@ -141,19 +145,22 @@ public class Training {
 	}
 
 	/**
-	 * Adjust the weights for each node based on the error value, learning rate and the 
-	 * nodeValue. 
+	 * Adjust the weights for each node based on the error value, learning rate
+	 * and the nodeValue.
 	 * 
-	 * @param mood which mood to calculate and adjust for, range allowed [1-4]
-	 * @param curFacit which mood the face actual is in
-	 * @param act activation value for the current face and mood
+	 * @param mood
+	 *            which mood to calculate and adjust for, range allowed [1-4]
+	 * @param curFacit
+	 *            which mood the face actual is in
+	 * @param act
+	 *            activation value for the current face and mood
 	 */
 	private void adjustWeights(int mood, int curFacit, double act) {
 		int desiredOutput = 0;
 		if (curFacit == mood) {
 			desiredOutput = 1;
 		}
-		
+
 		double error = desiredOutput - act;
 		if (error != 0) {
 			for (int i = 0; i < neuralNetwork.length; i++) {
@@ -170,8 +177,8 @@ public class Training {
 	}
 
 	/**
-	 * Checks if the neural network has learned enough to be done.
-	 * Important to not train to little or to much.
+	 * Checks if the neural network has learned enough to be done. Important to
+	 * not train to little or to much.
 	 * 
 	 * @return true if training is complete false otherwise
 	 */
@@ -181,7 +188,7 @@ public class Training {
 		int mood = 0;
 		boolean guess = true;
 		int[] acts = new int[4];
-		
+
 		for (FaceData fd : testTrainingData) {
 			buildNetwork(fd);
 			for (int i = 0; i < 4; i++) {
@@ -211,7 +218,7 @@ public class Training {
 
 		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
 			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-//			System.err.println(percent + "% correct");
+			// System.err.println(percent + "% correct");
 		}
 
 		if (percent >= 85) {
@@ -224,6 +231,14 @@ public class Training {
 		return true;
 	}
 
+	/**
+	 * Goes through all the images in the data array and calculates
+	 * the act for  all facial expressions and if the act is equal to 1,
+	 * Guess that the image shows that expression and print, the image id a
+	 * and which facial expression guessed on in the same format as the facit file.
+	 * 
+	 * @param data ArrayList containing all the images.
+	 */
 	public void runGuesses(ArrayList<FaceData> data) {
 		for (FaceData fd : data) {
 			buildNetwork(fd);
@@ -239,13 +254,12 @@ public class Training {
 					guess = false;
 					System.out.println(fd.getImageID() + " " + (i + 1));
 					break;
-                    //TODO will break and therefor not count acts[]++
+					// TODO will break and therefor not count acts[]++
 				}
 			}
 			if (!isOnlyOneAct(acts) && !guess) {
 				// TODO Guess on one of the acts that is one.
-			}
-			else if (guess) {
+			} else if (guess) {
 				Random r = new Random();
 				int g = r.nextInt(3) + 1;
 				System.out.println(fd.getImageID() + " " + g);
@@ -253,6 +267,7 @@ public class Training {
 		}
 	}
 
+	//TODO
 	private boolean isOnlyOneAct(int[] acts) {
 		int times = 0;
 		for (int i : acts) {
