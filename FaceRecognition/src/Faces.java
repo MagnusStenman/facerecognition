@@ -2,13 +2,10 @@ import java.io.FileNotFoundException;
 
 public class Faces {
 
-	private FaceHandler fh;
-    private Training training;
-
 	public Faces(String[] args) {
 		try {
-			fh = new FaceHandler(args[0], args[1], args[2]);
-            training = new Training();
+			FileHandler fh = new FileHandler(args[0], args[1], args[2]);
+            Training training = new Training();
             training.setTrainingData(fh.getTrainingData());
             training.setFacit(fh.getFacit());
             

@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class FaceHandler {
+public class FileHandler {
 
 	private static final int IMAGE_SIZE = 20;
 	private ArrayList<FaceData> trainingData;
 	private ArrayList<FaceData> testData;
 	private HashMap<String, Integer> facit;
 
-	public FaceHandler(String trainingFile, String trainingFacit,
-			String testFile) throws FileNotFoundException {
+	public FileHandler(String trainingFile, String trainingFacit,
+                       String testFile) throws FileNotFoundException {
 
 		trainingData = readToFaceData(trainingFile);
 		testData = readToFaceData(testFile);
