@@ -16,13 +16,12 @@ public class FaceHandler {
 	public FaceHandler(String trainingFile, String trainingFacit,
 			String testFile) throws FileNotFoundException {
 
-		trainingData = readFaceData(trainingFile);
-		testData = readFaceData(testFile);
+		trainingData = readToFaceData(trainingFile);
+		testData = readToFaceData(testFile);
 		facit = readFacitFile(trainingFacit);
 	}
 
-	//TODO readFaceData??? facedata är en class...., read facefiles eller nått
-	private ArrayList<FaceData> readFaceData(String faceFile)
+	private ArrayList<FaceData> readToFaceData(String faceFile)
 			throws FileNotFoundException {
 		BufferedReader br = new BufferedReader(new FileReader(faceFile));
 
