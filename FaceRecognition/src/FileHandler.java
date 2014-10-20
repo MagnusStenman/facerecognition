@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 /**
- * This class will read the training-file and test-file to ArrayLists of FaceData objects,
- * the facit-file is read to a HashMap of Strings(keys) and Integers(values). 
- * It will skip all lines which are either empty or starts with a hash-sign (#). 
- * FaceData
+ * This class will read the training-file and test-file to ArrayLists of
+ * FaceData objects, the facit-file is read to a HashMap of Strings(keys) and
+ * Integers(values). It will skip all lines which are either empty or starts
+ * with a hash-sign (#). FaceData
  */
 public class FileHandler {
 
@@ -20,16 +20,19 @@ public class FileHandler {
 	private HashMap<String, Integer> facit;
 
 	/**
-	 * Constructor, Reads data from all the in files and stores them in in suitable data 
-	 * structures.
+	 * Constructor, Reads data from all the in files and stores them in in
+	 * suitable data structures.
 	 * 
-	 * @param trainingFile the .txt file with the training faces
-	 * @param trainingFacit the .txt file with the facit
-	 * @param testFile the .txt file to evaluate
+	 * @param trainingFile
+	 *            the .txt file with the training faces
+	 * @param trainingFacit
+	 *            the .txt file with the facit
+	 * @param testFile
+	 *            the .txt file to evaluate
 	 * @throws FileNotFoundException
 	 */
 	public FileHandler(String trainingFile, String trainingFacit,
-                       String testFile) throws FileNotFoundException {
+			String testFile) throws FileNotFoundException {
 
 		trainingData = readToFaceData(trainingFile);
 		testData = readToFaceData(testFile);
@@ -37,8 +40,8 @@ public class FileHandler {
 	}
 
 	/**
-	 * Reads data from a file containing facial expression images, 
-	 * and stores them in a FaceData object.
+	 * Reads data from a file containing facial expression images, and stores
+	 * them in a FaceData object.
 	 * 
 	 * @param faceFile
 	 * @return the data as an ArrayList
@@ -74,7 +77,8 @@ public class FileHandler {
 	}
 
 	/**
-	 * Reads a facit file and stores the correct answer for each image in a HashMap.
+	 * Reads a facit file and stores the correct answer for each image in a
+	 * HashMap.
 	 * 
 	 * @param facitFile
 	 * @return the data as an HashMap
@@ -105,7 +109,9 @@ public class FileHandler {
 
 	/**
 	 * Reads lines until tempLine contains the first line of a image.
-	 * @param br bufferedReader
+	 * 
+	 * @param br
+	 *            bufferedReader
 	 * @return the next line to read
 	 * @throws IOException
 	 */

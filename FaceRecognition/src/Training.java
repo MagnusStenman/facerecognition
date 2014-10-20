@@ -182,44 +182,44 @@ public class Training {
 	 * 
 	 * @return true if training is complete false otherwise
 	 */
-    private boolean scoreChecker() {
-        int hitCount = 0;
-        int mood = 0;
+	private boolean scoreChecker() {
+		int hitCount = 0;
+		int mood = 0;
 
-        for (FaceData fd : testTrainingData) {
-            int[] acts = new int[4];
-            buildNetwork(fd);
+		for (FaceData fd : testTrainingData) {
+			int[] acts = new int[4];
+			buildNetwork(fd);
 
-            for (int i = 0; i < 4; i++) {
-                double act = calculateActivation(i + 1);
-                if (act == 1) {
-                    acts[i]++;
-                    mood = i + 1;
-                }
-            }
+			for (int i = 0; i < 4; i++) {
+				double act = calculateActivation(i + 1);
+				if (act == 1) {
+					acts[i]++;
+					mood = i + 1;
+				}
+			}
 
-            if (!isOnlyOneAct(acts)) {
-                return true;
-            }
+			if (!isOnlyOneAct(acts)) {
+				return true;
+			}
 
-            if (facit.get(fd.getImageID()) == mood) {
-                hitCount++;
-            }
-        }
+			if (facit.get(fd.getImageID()) == mood) {
+				hitCount++;
+			}
+		}
 
-        if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
-            percent = ((double) hitCount / (double) testTrainingData.size() * 100);
-        }
+		if (((double) hitCount / (double) testTrainingData.size() * 100) > percent) {
+			percent = ((double) hitCount / (double) testTrainingData.size() * 100);
+		}
 
-        if (percent >= 85) {
-            counter++;
-            if (counter == 3)
-                return false;
-        } else {
-            counter = 0;
-        }
-        return true;
-    }
+		if (percent >= 85) {
+			counter++;
+			if (counter == 3)
+				return false;
+		} else {
+			counter = 0;
+		}
+		return true;
+	}
 
 	/**
 	 * Goes through all the images in the data array and calculates the act for
@@ -230,43 +230,44 @@ public class Training {
 	 * @param data
 	 *            ArrayList containing all the images.
 	 */
-    public void runGuesses(ArrayList<FaceData> data) {
-        for (FaceData fd : data) {
-            buildNetwork(fd);
-            boolean guess = true;
-            int[] acts = new int[4];
+	public void runGuesses(ArrayList<FaceData> data) {
+		for (FaceData fd : data) {
+			buildNetwork(fd);
+			boolean guess = true;
+			int[] acts = new int[4];
 
-            for (int i = 0; i < 4; i++) {
-                double act = calculateActivation(i + 1);
-                if (act == 1) {
-                    acts[i]++;
-                    guess = false;
-                }
-            }
-            if (isOnlyOneAct(acts)) {
-                for (int i = 0; i < acts.length; i++) {
-                    if (acts[i] == 1) {
-                        System.out.println(fd.getImageID() + " " + (i + 1));
-                    }
-                }
-            } else if (!guess) {
-                Random r = new Random();
-                int g = r.nextInt(4);
-                while (acts[g] == 0) {
-                    g = r.nextInt(4);
-                }
-                System.out.println(fd.getImageID() + " " + (g + 1));
-            } else {
-                Random r = new Random();
-                int g = r.nextInt(3) + 1;
-                System.out.println(fd.getImageID() + " " + g);
-            }
-        }
-    }
+			for (int i = 0; i < 4; i++) {
+				double act = calculateActivation(i + 1);
+				if (act == 1) {
+					acts[i]++;
+					guess = false;
+				}
+			}
+			if (isOnlyOneAct(acts)) {
+				for (int i = 0; i < acts.length; i++) {
+					if (acts[i] == 1) {
+						System.out.println(fd.getImageID() + " " + (i + 1));
+					}
+				}
+			} else if (!guess) {
+				Random r = new Random();
+				int g = r.nextInt(4);
+				while (acts[g] == 0) {
+					g = r.nextInt(4);
+				}
+				System.out.println(fd.getImageID() + " " + (g + 1));
+			} else {
+				Random r = new Random();
+				int g = r.nextInt(3) + 1;
+				System.out.println(fd.getImageID() + " " + g);
+			}
+		}
+	}
 
 	/**
-	 * Checks if there is more then one of the indexes that
-	 * has the value 1, return true if only one is, else false.
+	 * Checks if there is more then one of the indexes that has the value 1,
+	 * return true if only one is, else false.
+	 * 
 	 * @param acts
 	 * @return
 	 */
