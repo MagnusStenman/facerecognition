@@ -39,7 +39,7 @@ public class Faces {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length > 2) {
+		if (args.length == 3) {
 			new Faces(args);
 		} else {
 			System.err.println("Not enough arguments to run program.");
